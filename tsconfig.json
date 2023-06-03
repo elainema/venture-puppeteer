@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2019",
+      "ES6",
+    ],
+    "target": "es2015",
+    "module": "CommonJS",
+    "allowJs": true,
+    "composite": true,
+    "declaration": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "rootDir": ".",
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "dist",
+    "package.json"
+  ],
+  "include": [
+    "**/*",
+    "**/*.json"
+  ]
+}
