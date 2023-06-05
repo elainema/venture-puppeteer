@@ -1,18 +1,21 @@
 {
   "compilerOptions": {
     "lib": [
-      "es2019",
-      "ES6",
+      "esnext",
+      "DOM"
     ],
-    "target": "es2015",
-    "module": "CommonJS",
+    "target": "esnext",
+    // "module": "esnext",
+    "module": "commonjs",
     "allowJs": true,
     "composite": true,
     "declaration": true,
     "sourceMap": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "outDir": "dist",
+    "noUnusedLocals": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "rootDir": ".",
@@ -22,8 +25,4 @@
     "dist",
     "package.json"
   ],
-  "include": [
-    "**/*",
-    "**/*.json"
-  ]
 }

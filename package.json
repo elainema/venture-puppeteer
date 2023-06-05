@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build":"tsc",
-    "dev":"node dist/index.js"
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "dev":"cd dist && node index.js"
   },
   "author": "elaine.ma@aspendigital.co",
   "license": "ISC",

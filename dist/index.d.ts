@@ -1,1 +1,1 @@
-declare const puppeteer: any;
+export {};
