@@ -15,7 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "outDir": "dist",
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "rootDir": ".",

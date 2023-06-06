@@ -5,15 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"tsc",
+    "build": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "dev":"cd dist && node index.js"
+    "dev": "cd dist && node index.js"
   },
   "author": "elaine.ma@aspendigital.co",
   "license": "ISC",
-  "devDependencies": {
-  },
   "dependencies": {
-    "puppeteer": "^20.4.0"
+    "html-minifier-terser": "^7.2.0",
+    "puppeteer": "^20.4.0",
+    "uglify-js": "^3.17.4"
   }
 }

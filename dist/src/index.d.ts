@@ -1,2 +1,3 @@
-declare const generatePng: (targetUrl: string, isMobile: boolean) => void;
+import { IRequestConfig, IRequestRes } from "./model";
+declare const generatePng: (config: IRequestConfig) => Promise<IRequestRes | unknown>;
 export { generatePng };
