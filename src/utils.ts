@@ -1,39 +1,12 @@
 import fs from "fs"
-import { minify }from 'html-minifier-terser';
-import { COMMON_HTML,IMG_HOST } from "./constant"
-/**
- * 获取页面高度
-*/
-const getPageHeight = async (targetUrl: string, isMobile: boolean, page) => {
-    if (!targetUrl) throw new console.error("url can't be empty"); 
-    // if (isMobile) {
-    //     // 设置ua(模拟移动端设备)
-    //     const ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Mobile/17G68 Safari/604.1"
-    //     await page.setUserAgent(ua);
-    // }
-    await page.goto(targetUrl, {
-        // https://pptr.dev/api/puppeteer.page.reload#remarks
-        waitUntil: 'networkidle0', // // 页面完全加载
-        maxTotalWaitTime: 1000 * 60 * 2,
-    }).catch( async e => {
-        console.log("page error:" + e)
-    });
-    const pageHeight = await page.evaluate(() => {
-        const body = window.document.body;
-        //const html =  window.documentElement;
-
-        return Math.max(
-            body.scrollHeight, body.offsetHeight,
-            //html.clientHeight, html.scrollHeight, html.offsetHeight
-        );
-    });
-    console.log("pageHeight: " + pageHeight);
-    return pageHeight
-
-}
+import { COMMON_HTML,IMG_HOST,COMMON_SCRIPT } from "./constant"
+import { IIMages } from "./model";
 
 /**
  * 检查目录是否存在，不存在就创建目录
+ * @param  {[string]} path  目录路径
+ * @param  {[string]} subPath  子目录路径
+ * @return {[string]}  返回子目录路径
 */
 const checkImagePath = (path: string, subPath?: string) => { 
     const _dirPath =  "../templates/" + path;
@@ -64,19 +37,63 @@ const checkImagePath = (path: string, subPath?: string) => {
 
 /**
  * 更新和获取html内容
+ * @param  {[string]} imgs  图片数组
+ * @param  {[string]} host  图片保存的域名host
+ * @return {[string]}  返回更新后的html内容
 */
-const updateHtmlContent: (imgs: string[], host: string) => string = (imgs, host) => {
+const updateHtmlContent: (images: IIMages, host: string) => string = (images, host) => {
     const htmlContent = COMMON_HTML;
     const _host = host;
-    let imgHtml = '';
-    for (let i = 0; i < imgs.length; i++) {
-        const imgSrc = _host + imgs[i];
-        imgHtml += `<img src="${imgSrc}" />`; // 将每个 img 元素的 HTML 代码添加到 imgHtml 中
+    let imgAppHtml = '';
+    let imgWebHtml = '';
+    const { app, web } = images;
+    for (let i = 0; i < app.length; i++) {
+        const imgSrc = _host + app[i];
+        imgAppHtml += `<img src="${imgSrc}" />`; // 将每个app img 元素的 HTML 代码添加到 imgAppHtml 中
+    }
+    for (let i = 0; i < web.length; i++) {
+        const imgSrc = _host + web[i];
+        imgWebHtml += `<img data-src="${imgSrc}" />`; // 将每个web img 元素的 HTML 代码添加到 imgWebHtml 中
     }
     const updatedHtml = htmlContent.replace('</body>', `
-        <div class="img-container">
-            ${imgHtml}
+        <div class="app-container">
+            ${imgAppHtml}
         </div>
+        <div class="web-container">
+            ${imgWebHtml}
+        </div>
+        ${COMMON_SCRIPT}
+    </body>
+    `);
+    return updatedHtml
+}
+/**
+ * 更新和获取html内容
+ * @param  {[string]} imgs  图片数组
+ * @param  {[string]} host  图片保存的域名host
+ * @return {[string]}  返回更新后的html内容
+*/
+const updateHtmlContent2: (images: IIMages, host: string, isProd?: boolean) => string = (images, host, isProd) => {
+    const htmlContent = COMMON_HTML;
+    const _host = host;
+    let imgAppHtml = '';
+    let imgWebHtml = '';
+    const { app, web } = images;
+    // for (let i = 0; i < app.length; i++) {
+    //     const imgSrc = _host + app[i];
+    //     imgAppHtml += `<img src="${imgSrc}" />`; // 将每个app img 元素的 HTML 代码添加到 imgAppHtml 中
+    // }
+    // for (let i = 0; i < web.length; i++) {
+    //     const imgSrc = _host + web[i];
+    //     imgWebHtml += `<img data-src="${imgSrc}" />`; // 将每个web img 元素的 HTML 代码添加到 imgWebHtml 中
+    // }
+    const updatedHtml = htmlContent.replace('</body>', `
+        <script>
+            var app = ${ JSON.stringify(app) };
+            var web = ${ JSON.stringify(web) };
+            var host = "${ _host }";
+        </script>
+        ${COMMON_SCRIPT}
     </body>
     `);
     return updatedHtml
@@ -84,31 +101,33 @@ const updateHtmlContent: (imgs: string[], host: string) => string = (imgs, host)
 /**
  * 渲染html
  * 渲染local只是为本地查看方便
+ * @param  {[string]} imgs  图片数组
+ * @param  {[string]} name  文件名
+ * @return 
 */
-const renderToHtml = async (imgs: string[], name: string) => { 
+const renderToHtml = async (imgs: IIMages, name: string) => { 
     console.log("renderToHtml start",name)
-    if (imgs.length === 0) return;
 
     const fileName = `${name}.html`;
     const fileNameLocal = `${name}_local.html`;
     const filePath = `../templates/${name}/` + fileName;
     const filePathLocal = `../templates/${name}/` + fileNameLocal;
-    const updatedHtmlLocal = updateHtmlContent(imgs, `./images/`)
-    let updatedHtmlProd = updateHtmlContent(imgs, IMG_HOST)
+    const updatedHtmlLocal = updateHtmlContent2(imgs, `./images/`, false)
+    let updatedHtmlProd = updateHtmlContent2(imgs, IMG_HOST)
 
     // TODO 代码混淆压缩
-    updatedHtmlProd = await minify(updatedHtmlProd, {
-        removeAttributeQuotes: true,
-        removeComments: true,
-        removeEmptyElements: true,
-        sortAttributes: true,
-        trimCustomFragments: true,
-        useShortDoctype: true,
-    });
+    // updatedHtmlProd = await minify(updatedHtmlProd, {
+    //     removeAttributeQuotes: true,
+    //     removeComments: true,
+    //     removeEmptyElements: true,
+    //     sortAttributes: true,
+    //     trimCustomFragments: true,
+    //     useShortDoctype: true,
+    // });
 
     // write the updated HTML string to the file
     fs.writeFileSync(filePath, updatedHtmlProd);
     fs.writeFileSync(filePathLocal, updatedHtmlLocal);
     console.log("renderToHtml end")
 }
-export { getPageHeight,checkImagePath,renderToHtml }
+export { checkImagePath,renderToHtml }

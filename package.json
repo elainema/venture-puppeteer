@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w",
     "build": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "dev": "cd dist && node index.js"
@@ -14,6 +15,7 @@
   "dependencies": {
     "html-minifier-terser": "^7.2.0",
     "puppeteer": "^20.4.0",
+    "ua-parser-js": "^1.0.35",
     "uglify-js": "^3.17.4"
   }
 }

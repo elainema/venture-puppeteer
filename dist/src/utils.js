@@ -3,39 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.renderToHtml = exports.checkImagePath = exports.getPageHeight = void 0;
+exports.renderToHtml = exports.checkImagePath = void 0;
 const fs_1 = __importDefault(require("fs"));
-const html_minifier_terser_1 = require("html-minifier-terser");
 const constant_1 = require("./constant");
 /**
- * 获取页面高度
-*/
-const getPageHeight = async (targetUrl, isMobile, page) => {
-    if (!targetUrl)
-        throw new console.error("url can't be empty");
-    // if (isMobile) {
-    //     // 设置ua(模拟移动端设备)
-    //     const ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Mobile/17G68 Safari/604.1"
-    //     await page.setUserAgent(ua);
-    // }
-    await page.goto(targetUrl, {
-        // https://pptr.dev/api/puppeteer.page.reload#remarks
-        waitUntil: 'networkidle0',
-        maxTotalWaitTime: 1000 * 60 * 2,
-    }).catch(async (e) => {
-        console.log("page error:" + e);
-    });
-    const pageHeight = await page.evaluate(() => {
-        const body = window.document.body;
-        //const html =  window.documentElement;
-        return Math.max(body.scrollHeight, body.offsetHeight);
-    });
-    console.log("pageHeight: " + pageHeight);
-    return pageHeight;
-};
-exports.getPageHeight = getPageHeight;
-/**
  * 检查目录是否存在，不存在就创建目录
+ * @param  {[string]} path  目录路径
+ * @param  {[string]} subPath  子目录路径
+ * @return {[string]}  返回子目录路径
 */
 const checkImagePath = (path, subPath) => {
     const _dirPath = "../templates/" + path;
@@ -65,19 +40,67 @@ const checkImagePath = (path, subPath) => {
 exports.checkImagePath = checkImagePath;
 /**
  * 更新和获取html内容
+ * @param  {[string]} imgs  图片数组
+ * @param  {[string]} host  图片保存的域名host
+ * @return {[string]}  返回更新后的html内容
 */
-const updateHtmlContent = (imgs, host) => {
+const updateHtmlContent = (images, host) => {
     const htmlContent = constant_1.COMMON_HTML;
     const _host = host;
-    let imgHtml = '';
-    for (let i = 0; i < imgs.length; i++) {
-        const imgSrc = _host + imgs[i];
-        imgHtml += `<img src="${imgSrc}" />`; // 将每个 img 元素的 HTML 代码添加到 imgHtml 中
+    let imgAppHtml = '';
+    let imgWebHtml = '';
+    const { app, web } = images;
+    for (let i = 0; i < app.length; i++) {
+        const imgSrc = _host + app[i];
+        imgAppHtml += `<img src="${imgSrc}" />`; // 将每个app img 元素的 HTML 代码添加到 imgAppHtml 中
+    }
+    for (let i = 0; i < web.length; i++) {
+        const imgSrc = _host + web[i];
+        imgWebHtml += `<img data-src="${imgSrc}" />`; // 将每个web img 元素的 HTML 代码添加到 imgWebHtml 中
     }
     const updatedHtml = htmlContent.replace('</body>', `
-        <div class="img-container">
-            ${imgHtml}
+        <div class="app-container">
+            ${imgAppHtml}
         </div>
+        <div class="web-container">
+            ${imgWebHtml}
+        </div>
+        ${constant_1.COMMON_SCRIPT}
+    </body>
+    `);
+    return updatedHtml;
+};
+/**
+ * 更新和获取html内容
+ * @param  {[string]} imgs  图片数组
+ * @param  {[string]} host  图片保存的域名host
+ * @return {[string]}  返回更新后的html内容
+*/
+const updateHtmlContent2 = (images, host, isProd) => {
+    const htmlContent = constant_1.COMMON_HTML;
+    const _host = host;
+    let imgAppHtml = '';
+    let imgWebHtml = '';
+    const { app, web } = images;
+    // for (let i = 0; i < app.length; i++) {
+    //     const imgSrc = _host + app[i];
+    //     imgAppHtml += `<img src="${imgSrc}" />`; // 将每个app img 元素的 HTML 代码添加到 imgAppHtml 中
+    // }
+    // for (let i = 0; i < web.length; i++) {
+    //     const imgSrc = _host + web[i];
+    //     imgWebHtml += `<img data-src="${imgSrc}" />`; // 将每个web img 元素的 HTML 代码添加到 imgWebHtml 中
+    // }
+    const updatedHtml = htmlContent.replace('</body>', `
+        <div class="app-container">
+        </div>
+        <div class="web-container">
+        </div>
+        <script>
+            var app = ${JSON.stringify(app)};
+            var web = ${JSON.stringify(web)};
+            var host = "${_host}";
+        </script>
+        ${constant_1.COMMON_SCRIPT}
     </body>
     `);
     return updatedHtml;
@@ -85,26 +108,27 @@ const updateHtmlContent = (imgs, host) => {
 /**
  * 渲染html
  * 渲染local只是为本地查看方便
+ * @param  {[string]} imgs  图片数组
+ * @param  {[string]} name  文件名
+ * @return
 */
 const renderToHtml = async (imgs, name) => {
     console.log("renderToHtml start", name);
-    if (imgs.length === 0)
-        return;
     const fileName = `${name}.html`;
     const fileNameLocal = `${name}_local.html`;
     const filePath = `../templates/${name}/` + fileName;
     const filePathLocal = `../templates/${name}/` + fileNameLocal;
-    const updatedHtmlLocal = updateHtmlContent(imgs, `./images/`);
-    let updatedHtmlProd = updateHtmlContent(imgs, constant_1.IMG_HOST);
+    const updatedHtmlLocal = updateHtmlContent2(imgs, `./images/`, false);
+    let updatedHtmlProd = updateHtmlContent2(imgs, constant_1.IMG_HOST);
     // TODO 代码混淆压缩
-    updatedHtmlProd = await (0, html_minifier_terser_1.minify)(updatedHtmlProd, {
-        removeAttributeQuotes: true,
-        removeComments: true,
-        removeEmptyElements: true,
-        sortAttributes: true,
-        trimCustomFragments: true,
-        useShortDoctype: true,
-    });
+    // updatedHtmlProd = await minify(updatedHtmlProd, {
+    //     removeAttributeQuotes: true,
+    //     removeComments: true,
+    //     removeEmptyElements: true,
+    //     sortAttributes: true,
+    //     trimCustomFragments: true,
+    //     useShortDoctype: true,
+    // });
     // write the updated HTML string to the file
     fs_1.default.writeFileSync(filePath, updatedHtmlProd);
     fs_1.default.writeFileSync(filePathLocal, updatedHtmlLocal);

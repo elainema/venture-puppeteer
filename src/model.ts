@@ -6,3 +6,7 @@ export interface IRequestConfig {
  export interface IRequestRes {
      images: string[];
  }
+export interface IIMages { 
+    web: Array<string>;
+    app:Array<string>;
+}

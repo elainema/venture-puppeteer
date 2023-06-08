@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.COMMON_SCRIPT = exports.IMAGE_PAGE_HEIGHT = exports.IMG_HOST = exports.COMMON_HTML = void 0;
-const COMMON_HTML = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -24,10 +21,17 @@ const COMMON_HTML = `<!DOCTYPE html>
     </style>
 </head>
 <body>
-</body>
-</html>`;
-exports.COMMON_HTML = COMMON_HTML;
-const COMMON_SCRIPT = `<script>
+
+        <div class="app-container">
+        </div>
+        <div class="web-container">
+        </div>
+        <script>
+            var app = ["aspendigital-mobile-section-1.webp","aspendigital-mobile-section-2.webp","aspendigital-mobile-section-3.webp","aspendigital-mobile-section-4.webp","aspendigital-mobile-section-5.webp","aspendigital-mobile-section-6.webp","aspendigital-mobile-section-7.webp","aspendigital-mobile-section-8.webp","aspendigital-mobile-section-9.webp","aspendigital-mobile-section-10.webp"];
+            var web = ["aspendigital-web-section-1.webp","aspendigital-web-section-2.webp","aspendigital-web-section-3.webp","aspendigital-web-section-4.webp","aspendigital-web-section-5.webp","aspendigital-web-section-6.webp","aspendigital-web-section-7.webp","aspendigital-web-section-8.webp","aspendigital-web-section-9.webp","aspendigital-web-section-10.webp","aspendigital-web-section-11.webp","aspendigital-web-section-12.webp","aspendigital-web-section-13.webp"];
+            var host = "https://aspen-dev.oss-ap-southeast-1.aliyuncs.com/afront/test/images/";
+        </script>
+        <script>
             var appContainer = document.querySelector('.app-container');
             var webContainer = document.querySelector('.web-container');
             /**
@@ -64,10 +68,7 @@ const COMMON_SCRIPT = `<script>
                     document.body.appendChild(img);
                 }
             }
-        </script>`;
-exports.COMMON_SCRIPT = COMMON_SCRIPT;
-const IMG_HOST = "https://aspen-dev.oss-ap-southeast-1.aliyuncs.com/afront/test/images/";
-exports.IMG_HOST = IMG_HOST;
-const IMAGE_PAGE_HEIGHT = 800;
-exports.IMAGE_PAGE_HEIGHT = IMAGE_PAGE_HEIGHT;
-//# sourceMappingURL=constant.js.map
+        </script>
+    </body>
+    
+</html>
