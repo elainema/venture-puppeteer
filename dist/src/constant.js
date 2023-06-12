@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COMMON_SCRIPT = exports.IMAGE_PAGE_HEIGHT = exports.IMG_HOST = exports.COMMON_HTML = void 0;
+exports.BANNER_HEIGHT_WEB = exports.BANNER_HEIGHT_APP = exports.WEB_SCREEN_WIDTGH = exports.COMMON_SCRIPT = exports.SCREEN_SHOT_HEIGHT = exports.IMG_HOST = exports.COMMON_HTML = void 0;
 const COMMON_HTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,27 +9,22 @@ const COMMON_HTML = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>your title</title>
     <style>
-        body{    
-            max-width: 1200px;
-            margin: auto;
-        }
         img{
-            display: block;
             width: 100%;
         }
-        .app-container,
-        .web-container {
-            display: none;
+        #detailMain {
+            max-width:1200px;
+            margin: auto;
+            /* 避免标签段之间的空格，导致元素间留白间距 */
+            font-size: 0;
         }
     </style>
 </head>
-<body>
+<body style="background: #2f3342;margin: auto;">
 </body>
 </html>`;
 exports.COMMON_HTML = COMMON_HTML;
-const COMMON_SCRIPT = `<script>
-            var appContainer = document.querySelector('.app-container');
-            var webContainer = document.querySelector('.web-container');
+const COMMON_SCRIPT = `
             /**
              * @description: 判断用户当前设备是否移动端
              * @params
@@ -47,27 +42,30 @@ const COMMON_SCRIPT = `<script>
                 return false;
             };
             if (isMobile()) {
-                appContainer.style.display = 'block';
-                loadImages(appContainer, app);
+                loadImages(appImages);
             } else {
-                webContainer.style.display = 'block';
-                loadImages(webContainer, web);
+                loadImages(webImages);
             }
 
-            function loadImages(container, images) {
-                // var images = // container.querySelectorAll('img[data-src]');
+            function loadImages(images) {
                 for (var i = 0; i < images.length; i++) {
                     var _ele = images[i];
                     var src = host + _ele
                     var img = document.createElement('img');
                     img.src = src
-                    document.body.appendChild(img);
+                   document.querySelector("#detailMain").appendChild(img);
                 }
             }
         </script>`;
 exports.COMMON_SCRIPT = COMMON_SCRIPT;
 const IMG_HOST = "https://aspen-dev.oss-ap-southeast-1.aliyuncs.com/afront/test/images/";
 exports.IMG_HOST = IMG_HOST;
-const IMAGE_PAGE_HEIGHT = 800;
-exports.IMAGE_PAGE_HEIGHT = IMAGE_PAGE_HEIGHT;
+const SCREEN_SHOT_HEIGHT = 400;
+exports.SCREEN_SHOT_HEIGHT = SCREEN_SHOT_HEIGHT;
+const WEB_SCREEN_WIDTGH = 1200;
+exports.WEB_SCREEN_WIDTGH = WEB_SCREEN_WIDTGH;
+const BANNER_HEIGHT_APP = 38;
+exports.BANNER_HEIGHT_APP = BANNER_HEIGHT_APP;
+const BANNER_HEIGHT_WEB = 60;
+exports.BANNER_HEIGHT_WEB = BANNER_HEIGHT_WEB;
 //# sourceMappingURL=constant.js.map

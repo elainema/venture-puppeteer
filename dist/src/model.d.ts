@@ -1,7 +1,8 @@
 export interface IRequestConfig {
     targetUrl: string;
     isMobile: boolean;
-    name: string;
+    folderName: string;
+    hasBanner: boolean;
 }
 export interface IRequestRes {
     images: string[];

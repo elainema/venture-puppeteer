@@ -1,10 +1,11 @@
 export interface IRequestConfig {
     targetUrl: string;
     isMobile: boolean;
-    name: string; // 生成图片的目录和 html名称
+    folderName: string; // 生成图片的目录和 html名称
+    hasBanner: boolean;
 }
  export interface IRequestRes {
-     images: string[];
+    images: string[];
  }
 export interface IIMages { 
     web: Array<string>;

@@ -14,10 +14,10 @@ const constant_1 = require("./constant");
 */
 const checkImagePath = (path, subPath) => {
     const _dirPath = "../templates/" + path;
-    const _subPath = subPath ? `${_dirPath}/${subPath}/` : "";
+    const _subPath = subPath ? `${_dirPath}/${subPath}` : "";
     return new Promise((resolve) => {
         if (!fs_1.default.existsSync(_dirPath)) {
-            console.log(' main Directory not found.');
+            console.log('main Directory not found.');
             // 如果一级目录不存在，就创建目录
             fs_1.default.mkdirSync(_dirPath);
             console.log('main Directory created successfully.');
@@ -90,17 +90,12 @@ const updateHtmlContent2 = (images, host, isProd) => {
     //     const imgSrc = _host + web[i];
     //     imgWebHtml += `<img data-src="${imgSrc}" />`; // 将每个web img 元素的 HTML 代码添加到 imgWebHtml 中
     // }
-    const updatedHtml = htmlContent.replace('</body>', `
-        <div class="app-container">
-        </div>
-        <div class="web-container">
-        </div>
+    const updatedHtml = htmlContent.replace('</body>', `<div id="detailMain"></div>
         <script>
-            var app = ${JSON.stringify(app)};
-            var web = ${JSON.stringify(web)};
+            var appImages = ${JSON.stringify(app)};
+            var webImages = ${JSON.stringify(web)};
             var host = "${_host}";
-        </script>
-        ${constant_1.COMMON_SCRIPT}
+            ${constant_1.COMMON_SCRIPT}
     </body>
     `);
     return updatedHtml;

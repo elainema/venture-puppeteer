@@ -6,34 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>your title</title>
     <style>
-        body{    
-            max-width: 1200px;
-            margin: auto;
-        }
         img{
-            display: block;
             width: 100%;
         }
-        .app-container,
-        .web-container {
-            display: none;
+        #detailMain {
+            max-width:1200px;
+            margin: auto;
+            /* 避免标签段之间的空格，导致元素间留白间距 */
+            font-size: 0;
         }
     </style>
 </head>
-<body>
-
-        <div class="app-container">
-        </div>
-        <div class="web-container">
-        </div>
+<body style="background: #2f3342;margin: auto;">
+<div id="detailMain"></div>
         <script>
-            var app = ["aspendigital-mobile-section-1.webp","aspendigital-mobile-section-2.webp","aspendigital-mobile-section-3.webp","aspendigital-mobile-section-4.webp","aspendigital-mobile-section-5.webp","aspendigital-mobile-section-6.webp","aspendigital-mobile-section-7.webp","aspendigital-mobile-section-8.webp","aspendigital-mobile-section-9.webp","aspendigital-mobile-section-10.webp"];
-            var web = ["aspendigital-web-section-1.webp","aspendigital-web-section-2.webp","aspendigital-web-section-3.webp","aspendigital-web-section-4.webp","aspendigital-web-section-5.webp","aspendigital-web-section-6.webp","aspendigital-web-section-7.webp","aspendigital-web-section-8.webp","aspendigital-web-section-9.webp","aspendigital-web-section-10.webp","aspendigital-web-section-11.webp","aspendigital-web-section-12.webp","aspendigital-web-section-13.webp"];
+            var appImages = [];
+            var webImages = ["web-aspendigital-1.webp","web-aspendigital-2.webp","web-aspendigital-3.webp","web-aspendigital-4.webp","web-aspendigital-5.webp","web-aspendigital-6.webp","web-aspendigital-7.webp","web-aspendigital-8.webp","web-aspendigital-9.webp","web-aspendigital-10.webp","web-aspendigital-11.webp","web-aspendigital-12.webp","web-aspendigital-13.webp","web-aspendigital-14.webp","web-aspendigital-15.webp","web-aspendigital-16.webp","web-aspendigital-17.webp","web-aspendigital-18.webp","web-aspendigital-19.webp","web-aspendigital-20.webp","web-aspendigital-21.webp","web-aspendigital-22.webp","web-aspendigital-23.webp","web-aspendigital-24.webp","web-aspendigital-25.webp"];
             var host = "./images/";
-        </script>
-        <script>
-            var appContainer = document.querySelector('.app-container');
-            var webContainer = document.querySelector('.web-container');
+            
             /**
              * @description: 判断用户当前设备是否移动端
              * @params
@@ -51,21 +41,18 @@
                 return false;
             };
             if (isMobile()) {
-                appContainer.style.display = 'block';
-                loadImages(appContainer, app);
+                loadImages(appImages);
             } else {
-                webContainer.style.display = 'block';
-                loadImages(webContainer, web);
+                loadImages(webImages);
             }
 
-            function loadImages(container, images) {
-                // var images = // container.querySelectorAll('img[data-src]');
+            function loadImages(images) {
                 for (var i = 0; i < images.length; i++) {
                     var _ele = images[i];
                     var src = host + _ele
                     var img = document.createElement('img');
                     img.src = src
-                    document.body.appendChild(img);
+                   document.querySelector("#detailMain").appendChild(img);
                 }
             }
         </script>

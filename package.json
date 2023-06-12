@@ -8,7 +8,7 @@
     "watch": "tsc -w",
     "build": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "dev": "cd dist && node index.js"
+    "dev": "cd test && node index.js"
   },
   "author": "elaine.ma@aspendigital.co",
   "license": "ISC",
