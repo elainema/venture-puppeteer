@@ -55,7 +55,7 @@ const COMMON_SCRIPT = `
             }
         </script>`
 
-const IMG_HOST = "https://aspen-dev.oss-ap-southeast-1.aliyuncs.com/afront/test/images/"
+const IMG_HOST = process.env.IMG_HOST ? process.env.IMG_HOST : "https://aspen-dev.oss-ap-southeast-1.aliyuncs.com/afront/test/images/"
 const SCREEN_SHOT_HEIGHT = 400;
 const WEB_SCREEN_WIDTGH = 1200
 const BANNER_HEIGHT_APP = 38
