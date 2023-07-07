@@ -1,25 +1,4 @@
-const COMMON_HTML = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>your title</title>
-    <style>
-        img{
-            width: 100%;
-        }
-        #detailMain {
-            max-width:1200px;
-            margin: auto;
-            /* 避免标签段之间的空格，导致元素间留白间距 */
-            font-size: 0;
-        }
-    </style>
-</head>
-<body style="background: #2f3342;margin: auto;">
-</body>
-</html>`
+
 
 const COMMON_SCRIPT = `
             /**
@@ -39,26 +18,30 @@ const COMMON_SCRIPT = `
                 return false;
             };
             if (isMobile()) {
+                document.querySelector("#detailMain").style.background = "#000";
                 loadImages(appImages);
             } else {
+                document.querySelector("#detailMain").style.width = "1200px";
+                document.querySelector("#detailMain").style.background = "#2f3342";
                 loadImages(webImages);
             }
-
             function loadImages(images) {
                 for (var i = 0; i < images.length; i++) {
                     var _ele = images[i];
-                    var src = host + _ele
+                    var src = _ele;
                     var img = document.createElement('img');
-                    img.src = src
+                    img.src = src;
+                    img.loading = "eager";
+                    img.style.maxWidth = "100%";
                    document.querySelector("#detailMain").appendChild(img);
                 }
-            }
-        </script>`
+            }`
 
-const IMG_HOST = process.env.IMG_HOST ? process.env.IMG_HOST : "https://aspen-dev.oss-ap-southeast-1.aliyuncs.com/afront/test/images/"
+const IMG_HOST = process.env.IMG_HOST ? process.env.IMG_HOST : "https://static.aspendigital.co/strategies/detailTemplate/web3UnicornSecondaryFundI/images/"
+// https://static.aspendigital.co/strategies/detailTemplate/web3UnicornSecondaryFundI/Web3UnicornSecondaryFundI.html
 const SCREEN_SHOT_HEIGHT = 400;
 const WEB_SCREEN_WIDTGH = 1200
 const BANNER_HEIGHT_APP = 38
 const BANNER_HEIGHT_WEB = 60
 
-export { COMMON_HTML,IMG_HOST,SCREEN_SHOT_HEIGHT,COMMON_SCRIPT,WEB_SCREEN_WIDTGH,BANNER_HEIGHT_APP,BANNER_HEIGHT_WEB }
+export { IMG_HOST,SCREEN_SHOT_HEIGHT,COMMON_SCRIPT,WEB_SCREEN_WIDTGH,BANNER_HEIGHT_APP,BANNER_HEIGHT_WEB }

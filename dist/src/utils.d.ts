@@ -13,5 +13,5 @@ declare const checkImagePath: (path: string, subPath?: string) => Promise<unknow
  * @param  {[string]} name  文件名
  * @return
 */
-declare const renderToHtml: (imgs: IIMages, name: string) => Promise<void>;
+declare const renderToHtml: (allimgs: IIMages, name: string) => Promise<void>;
 export { checkImagePath, renderToHtml };

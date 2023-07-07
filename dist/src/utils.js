@@ -45,60 +45,21 @@ exports.checkImagePath = checkImagePath;
  * @return {[string]}  返回更新后的html内容
 */
 const updateHtmlContent = (images, host) => {
-    const htmlContent = constant_1.COMMON_HTML;
-    const _host = host;
-    let imgAppHtml = '';
-    let imgWebHtml = '';
+    const htmlContent = "";
     const { app, web } = images;
-    for (let i = 0; i < app.length; i++) {
-        const imgSrc = _host + app[i];
-        imgAppHtml += `<img src="${imgSrc}" />`; // 将每个app img 元素的 HTML 代码添加到 imgAppHtml 中
-    }
-    for (let i = 0; i < web.length; i++) {
-        const imgSrc = _host + web[i];
-        imgWebHtml += `<img data-src="${imgSrc}" />`; // 将每个web img 元素的 HTML 代码添加到 imgWebHtml 中
-    }
-    const updatedHtml = htmlContent.replace('</body>', `
-        <div class="app-container">
-            ${imgAppHtml}
-        </div>
-        <div class="web-container">
-            ${imgWebHtml}
-        </div>
-        ${constant_1.COMMON_SCRIPT}
-    </body>
-    `);
-    return updatedHtml;
-};
-/**
- * 更新和获取html内容
- * @param  {[string]} imgs  图片数组
- * @param  {[string]} host  图片保存的域名host
- * @return {[string]}  返回更新后的html内容
-*/
-const updateHtmlContent2 = (images, host, isProd) => {
-    const htmlContent = constant_1.COMMON_HTML;
-    const _host = host;
-    let imgAppHtml = '';
-    let imgWebHtml = '';
-    const { app, web } = images;
-    // for (let i = 0; i < app.length; i++) {
-    //     const imgSrc = _host + app[i];
-    //     imgAppHtml += `<img src="${imgSrc}" />`; // 将每个app img 元素的 HTML 代码添加到 imgAppHtml 中
-    // }
-    // for (let i = 0; i < web.length; i++) {
-    //     const imgSrc = _host + web[i];
-    //     imgWebHtml += `<img data-src="${imgSrc}" />`; // 将每个web img 元素的 HTML 代码添加到 imgWebHtml 中
-    // }
-    const updatedHtml = htmlContent.replace('</body>', `<div id="detailMain"></div>
+    const updatedHtml = htmlContent.replace('', `<div id="detailMain" style="font-size: 0;margin: auto;"></div>
         <script>
             var appImages = ${JSON.stringify(app)};
             var webImages = ${JSON.stringify(web)};
-            var host = "${_host}";
+            var host = "${constant_1.IMG_HOST}";
             ${constant_1.COMMON_SCRIPT}
-    </body>
+        </script>
     `);
     return updatedHtml;
+};
+const convet2Base64 = (path) => {
+    var imageBuf = fs_1.default.readFileSync(path);
+    return "data:image/webp;base64," + imageBuf.toString("base64");
 };
 /**
  * 渲染html
@@ -107,14 +68,27 @@ const updateHtmlContent2 = (images, host, isProd) => {
  * @param  {[string]} name  文件名
  * @return
 */
-const renderToHtml = async (imgs, name) => {
+const renderToHtml = async (allimgs, name) => {
     console.log("renderToHtml start", name);
+    const imgs = {
+        web: allimgs.web,
+        app: allimgs.app
+    };
+    const path = `../templates/Web3UnicornSecondaryFundI/images`;
+    imgs.web = allimgs.web.map((img) => {
+        return convet2Base64(`${path}/${img}`);
+    });
+    imgs.app = allimgs.app.map((img) => {
+        return convet2Base64(`${path}/${img}`);
+    });
+    // imgs.web[0] = convet2Base64(`${path}/${imgs.web[0]}`) 
+    // imgs.app[0] = convet2Base64(`${path}/${imgs.app[0]}`) 
     const fileName = `${name}.html`;
     const fileNameLocal = `${name}_local.html`;
     const filePath = `../templates/${name}/` + fileName;
     const filePathLocal = `../templates/${name}/` + fileNameLocal;
-    const updatedHtmlLocal = updateHtmlContent2(imgs, `./images/`, false);
-    let updatedHtmlProd = updateHtmlContent2(imgs, constant_1.IMG_HOST);
+    const updatedHtmlLocal = updateHtmlContent(imgs, ``, false);
+    let updatedHtmlProd = updateHtmlContent(imgs, constant_1.IMG_HOST);
     // TODO 代码混淆压缩
     // updatedHtmlProd = await minify(updatedHtmlProd, {
     //     removeAttributeQuotes: true,
@@ -127,7 +101,7 @@ const renderToHtml = async (imgs, name) => {
     // write the updated HTML string to the file
     fs_1.default.writeFileSync(filePath, updatedHtmlProd);
     fs_1.default.writeFileSync(filePathLocal, updatedHtmlLocal);
-    console.log("renderToHtml end");
+    console.log("render To Html end");
 };
 exports.renderToHtml = renderToHtml;
 //# sourceMappingURL=utils.js.map
